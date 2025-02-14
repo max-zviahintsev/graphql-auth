@@ -1,0 +1,44 @@
+{
+  "name": "auth-server",
+  "version": "1.0.0",
+  "description": "",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "start": "tsx --env-file .env src/server.ts",
+    "dev": "tsx watch --env-file .env src/server.ts",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@graphql-yoga/plugin-jwt": "^3.5.0",
+    "argon2": "^0.41.1",
+    "graphql": "^16.10.0",
+    "graphql-yoga": "^5.11.0",
+    "jsonwebtoken": "^9.0.2",
+    "mongoose": "^8.10.0"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.20.0",
+    "@types/eslint": "^9.6.1",
+    "@types/eslint__js": "^8.42.3",
+    "@types/jsonwebtoken": "^9.0.8",
+    "@types/node": "^22.13.4",
+    "@typescript-eslint/parser": "^8.24.0",
+    "eslint": "^9.20.1",
+    "eslint-config-prettier": "^10.0.1",
+    "eslint-plugin-prettier": "^5.2.3",
+    "prettier": "^3.5.1",
+    "tsx": "^4.19.2",
+    "typescript": "^5.7.3",
+    "typescript-eslint": "^8.24.0"
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "argon2"
+    ]
+  }
+}
