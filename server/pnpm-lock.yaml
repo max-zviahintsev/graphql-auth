@@ -8,6 +8,9 @@ importers:
 
   .:
     dependencies:
+      '@graphql-tools/merge':
+        specifier: ^9.0.19
+        version: 9.0.19(graphql@16.10.0)
       '@graphql-yoga/plugin-jwt':
         specifier: ^3.5.0
         version: 3.5.0(@whatwg-node/server@0.9.67)(graphql-yoga@5.11.0(graphql@16.10.0))(graphql@16.10.0)
