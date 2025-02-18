@@ -12,9 +12,9 @@ async function gracefulShutdown() {
     if (process.env.NODE_ENV !== 'test') {
       process.exit(0)
     }
-    console.log('Disconnected from MongoDB')
+    console.log('Disconnected from MongoDB') //eslint-disable-line
   } catch (error) {
-    console.error('Error disconnecting from MongoDB:', error)
+    console.error('Error disconnecting from MongoDB:', error) //eslint-disable-line
   }
 }
 
@@ -27,7 +27,7 @@ async function mongoConnect() {
   try {
     await mongoose.connect(uri, clientOptions)
     await db?.admin().command({ ping: 1 })
-    console.log('Connected to MongoDB')
+    console.log('Connected to MongoDB') //eslint-disable-line
 
     const exitEvents = [
       `exit`,
@@ -42,7 +42,7 @@ async function mongoConnect() {
       process.on(event, gracefulShutdown)
     })
   } catch (err) {
-    console.error(err)
+    console.error(err) //eslint-disable-line
   }
 }
 mongoConnect()

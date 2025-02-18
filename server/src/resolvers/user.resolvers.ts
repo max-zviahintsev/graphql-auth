@@ -7,22 +7,17 @@ import { JwtContext, User } from './../types.ts'
 const JWT_SECRET = process.env.JWT_SECRET as string
 const { ObjectId } = Types
 
-const generateToken = (user: User) => {
-  console.log('user', user)
-
-  return jwt.sign({ userId: user.id }, JWT_SECRET, {
+const generateToken = (user: User) =>
+  jwt.sign({ userId: user.id }, JWT_SECRET, {
     audience: 'max-horo',
     issuer: 'http://localhost',
     expiresIn: '1h',
   })
-}
 
 const userResolvers = {
   Query: {
     user: async (_: unknown, __: unknown, ctx: JwtContext) => {
       try {
-        console.log('ctx.jwt', ctx.jwt)
-
         if (!ctx.jwt) {
           throw new GraphQLError('Unauthorized')
         }
@@ -32,7 +27,7 @@ const userResolvers = {
         const user = await userModel.findById(objectId)
         return user
       } catch (error) {
-        console.error('Error fetching user:', error)
+        console.error('Error fetching user:', error) // eslint-disable-line
         throw new Error('Failed to fetch user')
       }
     },
@@ -56,15 +51,12 @@ const userResolvers = {
         const token = generateToken(user)
         return { token, user }
       } catch (error) {
-        console.error('Error registering user:', error)
+        console.error('Error registering user:', error) // eslint-disable-line
         throw new Error('Failed to register user')
       }
     },
 
-    login: async (
-      _: any,
-      { email, password }: { email: string; password: string }
-    ) => {
+    login: async (_: unknown, { email, password }: { email: string; password: string }) => {
       try {
         const user = await userModel.findOne({ email })
 
@@ -77,7 +69,7 @@ const userResolvers = {
         const token = generateToken(user)
         return { token, user }
       } catch (error) {
-        console.error('Error logging in:', error)
+        console.error('Error logging in:', error) // eslint-disable-line
         throw new Error('Failed to log in')
       }
     },

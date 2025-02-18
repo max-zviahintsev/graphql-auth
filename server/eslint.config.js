@@ -1,17 +1,22 @@
 import eslintJs from '@eslint/js'
-import tseslint from 'typescript-eslint'
-import tsParser from '@typescript-eslint/parser'
-import prettierPlugin from 'eslint-plugin-prettier'
+import { configs as tseslintConfigs } from 'typescript-eslint'
+import * as parser from '@typescript-eslint/parser'
+import prettier from 'eslint-plugin-prettier'
 import prettierConfig from 'eslint-config-prettier'
+import eslintPluginImportX from 'eslint-plugin-import-x'
+import { createTypeScriptImportResolver } from 'eslint-import-resolver-typescript'
 
 export default [
   eslintJs.configs.recommended,
-  ...tseslint.configs.recommended,
+  ...tseslintConfigs.recommended,
+  eslintPluginImportX.flatConfigs.recommended,
+  eslintPluginImportX.flatConfigs.typescript,
   prettierConfig,
   {
-    files: ['**/*.ts', '**/*.tsx'],
+    files: ['**/*.{js,mjs,cjs,jsx,mjsx,ts,tsx,mtsx}'],
+    ignores: ['eslint.config.js', 'dist/**', 'node_modules/**'],
     languageOptions: {
-      parser: tsParser,
+      parser,
       parserOptions: {
         project: './tsconfig.json',
       },
@@ -19,8 +24,7 @@ export default [
       sourceType: 'module',
     },
     plugins: {
-      '@typescript-eslint': tseslint.plugin,
-      prettier: prettierPlugin,
+      prettier,
     },
     rules: {
       'prettier/prettier': 'error',
@@ -29,11 +33,7 @@ export default [
       'no-console': 'warn',
       'no-debugger': 'warn',
       'no-unused-expressions': 'error',
-      'no-unused-locals': 'error',
-      'no-unused-parameters': 'error',
       'no-fallthrough': 'error',
-      'no-unchecked-import': 'error',
-      'consistent-return': 'error',
       'arrow-body-style': ['error', 'as-needed'],
       'prefer-const': 'error',
       'no-var': 'error',
@@ -46,8 +46,13 @@ export default [
       '@typescript-eslint/no-shadow': 'error',
       'no-undef': 'off',
     },
-  },
-  {
-    ignores: ['dist/**', 'node_modules/**'],
+    settings: {
+      'import-x/resolver-next': [
+        createTypeScriptImportResolver({
+          alwaysTryTypes: true,
+          project: './tsconfig.json',
+        }),
+      ],
+    },
   },
 ]
