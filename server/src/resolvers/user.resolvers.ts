@@ -1,13 +1,28 @@
-import { User } from './../types.ts'
+import { Types } from 'mongoose'
+import jwt from 'jsonwebtoken'
+import { GraphQLError } from 'graphql'
+import userModel from '../models/user.model.ts'
+import { JwtContext, User } from './../types.ts'
+
+const JWT_SECRET = process.env.JWT_SECRET as string
+const { ObjectId } = Types
+
+const generateToken = (user: User) => {
+  return jwt.sign({ userId: user.id }, JWT_SECRET, { expiresIn: '1h' })
+}
 
 const userResolvers = {
   Query: {
-    user: async (): Promise<User> => {
+    user: async (_: unknown, __: unknown, ctx: JwtContext) => {
       try {
-        return await {
-          id: '1',
-          email: 'test@test.com',
+        if (!ctx.jwt) {
+          throw new GraphQLError('Unauthorized')
         }
+
+        const id: string = ctx.jwt.payload.sub
+        const objectId = new ObjectId(id)
+        const user = await userModel.findById(objectId)
+        return user
       } catch (error) {
         console.error('Error fetching user:', error)
         throw new Error('Failed to fetch user')
@@ -16,36 +31,50 @@ const userResolvers = {
   },
 
   Mutation: {
-    register: async (): Promise<User> => {
+    register: async (_: unknown, args: { email: string; password: string }) => {
       try {
-        return await {
-          id: '1',
-          email: 'test@test.com',
+        const { email, password } = args
+
+        const isUserExists = await userModel.findOne({ email })
+        if (isUserExists) {
+          throw new GraphQLError('User already exists', {
+            extensions: { code: 'USER_ALREADY_EXISTS' },
+          })
         }
+
+        const user = new userModel({ email, password })
+        await user.save()
+
+        const token = generateToken(user)
+        return { token, user }
       } catch (error) {
         console.error('Error registering user:', error)
         throw new Error('Failed to register user')
       }
     },
-    login: async (): Promise<User> => {
+
+    login: async (
+      _: any,
+      { email, password }: { email: string; password: string }
+    ) => {
       try {
-        return await {
-          id: '1',
-          email: 'test@test.com',
+        const user = await userModel.findOne({ email })
+
+        if (!user || !(await user.comparePassword(password))) {
+          throw new GraphQLError('Invalid email or password', {
+            extensions: { code: 'INVALID_CREDENTIALS' },
+          })
         }
+
+        const token = generateToken(user)
+        return { token, user }
       } catch (error) {
         console.error('Error logging in:', error)
         throw new Error('Failed to log in')
       }
     },
-    logout: async (): Promise<void> => {
-      try {
-        return
-      } catch (error) {
-        console.error('Error logging out:', error)
-        throw new Error('Failed to log out')
-      }
-    },
+
+    logout: () => true,
   },
 }
 
