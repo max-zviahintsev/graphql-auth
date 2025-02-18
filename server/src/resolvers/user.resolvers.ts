@@ -8,19 +8,27 @@ const JWT_SECRET = process.env.JWT_SECRET as string
 const { ObjectId } = Types
 
 const generateToken = (user: User) => {
-  return jwt.sign({ userId: user.id }, JWT_SECRET, { expiresIn: '1h' })
+  console.log('user', user)
+
+  return jwt.sign({ userId: user.id }, JWT_SECRET, {
+    audience: 'max-horo',
+    issuer: 'http://localhost',
+    expiresIn: '1h',
+  })
 }
 
 const userResolvers = {
   Query: {
     user: async (_: unknown, __: unknown, ctx: JwtContext) => {
       try {
+        console.log('ctx.jwt', ctx.jwt)
+
         if (!ctx.jwt) {
           throw new GraphQLError('Unauthorized')
         }
 
-        const id: string = ctx.jwt.payload.sub
-        const objectId = new ObjectId(id)
+        const { userId } = ctx.jwt.payload
+        const objectId = new ObjectId(userId)
         const user = await userModel.findById(objectId)
         return user
       } catch (error) {

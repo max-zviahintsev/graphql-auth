@@ -28,7 +28,7 @@ const yoga = createYoga({
       ],
       tokenVerification: {
         issuer: ['http://localhost'],
-        audience: 'my-audience',
+        audience: 'max-horo',
         algorithms: ['HS256', 'RS256'],
       },
       extendContext: true,
