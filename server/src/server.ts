@@ -1,6 +1,7 @@
 import { createServer } from 'node:http'
 import { createYoga, createSchema } from 'graphql-yoga'
-import { createInlineSigningKeyProvider, extractFromHeader, useJWT } from '@graphql-yoga/plugin-jwt'
+import { useCookies } from '@whatwg-node/server-plugin-cookies'
+import { createInlineSigningKeyProvider, useJWT, extractFromCookie } from '@graphql-yoga/plugin-jwt'
 import { mongoConnect } from './services/mongo.ts'
 import { typeDefs } from './schema/typeDefs.ts'
 import { userResolvers } from './resolvers/user.resolvers.ts'
@@ -21,9 +22,10 @@ const yoga = createYoga({
     credentials: true,
   },
   plugins: [
+    useCookies(),
     useJWT({
       signingKeyProviders: [createInlineSigningKeyProvider(signingKey)],
-      tokenLookupLocations: [extractFromHeader({ name: 'authorization', prefix: 'Bearer' })],
+      tokenLookupLocations: [extractFromCookie({ name: 'token' })],
       tokenVerification: {
         issuer: ['http://localhost'],
         audience: 'max-horo',

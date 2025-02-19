@@ -62,7 +62,7 @@ const userResolvers = {
           path: '/',
         })
 
-        request.headers.set('Set-Cookie', cookie)
+        await request.cookieStore?.set(cookie)
         return { user }
       } catch (error) {
         console.error('Error registering user:', error) // eslint-disable-line
@@ -94,8 +94,9 @@ const userResolvers = {
           path: '/',
         })
 
-        request.headers.set('Set-Cookie', cookie)
-        return user
+        await request.cookieStore?.set(cookie)
+
+        return true
       } catch (error) {
         console.error('Error logging in:', error) // eslint-disable-line
         throw new Error('Failed to log in')

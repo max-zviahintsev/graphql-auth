@@ -17,6 +17,7 @@
   "dependencies": {
     "@graphql-tools/merge": "^9.0.19",
     "@graphql-yoga/plugin-jwt": "^3.6.0",
+    "@whatwg-node/server-plugin-cookies": "^1.0.3",
     "argon2": "^0.41.1",
     "cookie": "^1.0.2",
     "graphql": "^16.10.0",
