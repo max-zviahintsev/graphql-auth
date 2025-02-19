@@ -1,4 +1,11 @@
+:root {
+  --font-color: rgb(200, 200, 200);
+  --button-color: rgb(160, 68, 25);
+}
+
 body {
   margin: 0;
-  padding: 0;
+  padding: 10px;
+  background-color: rgb(25, 25, 25);
+  color: var(--font-color);
 }
