@@ -16,10 +16,10 @@
   "license": "ISC",
   "dependencies": {
     "@graphql-tools/merge": "^9.0.19",
-    "@graphql-yoga/plugin-jwt": "^3.5.0",
+    "@graphql-yoga/plugin-jwt": "^3.6.0",
     "argon2": "^0.41.1",
     "graphql": "^16.10.0",
-    "graphql-yoga": "^5.11.0",
+    "graphql-yoga": "^5.12.0",
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.10.1"
   },
@@ -36,7 +36,7 @@
     "eslint-plugin-import-x": "^4.6.1",
     "eslint-plugin-prettier": "^5.2.3",
     "prettier": "^3.5.1",
-    "tsx": "^4.19.2",
+    "tsx": "^4.19.3",
     "typescript": "^5.7.3",
     "typescript-eslint": "^8.24.1"
   },
