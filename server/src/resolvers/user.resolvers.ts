@@ -1,6 +1,7 @@
 import { Types } from 'mongoose'
 import jwt from 'jsonwebtoken'
 import { GraphQLError } from 'graphql'
+import { serialize } from 'cookie'
 import userModel from '../models/user.model.ts'
 import { JwtContext, User } from './../types.ts'
 
@@ -34,7 +35,11 @@ const userResolvers = {
   },
 
   Mutation: {
-    register: async (_: unknown, args: { email: string; password: string }) => {
+    register: async (
+      _: unknown,
+      args: { email: string; password: string },
+      { request }: JwtContext,
+    ) => {
       try {
         const { email, password } = args
 
@@ -49,15 +54,29 @@ const userResolvers = {
         await user.save()
 
         const token = generateToken(user)
-        return { token, user }
+        const cookie = serialize('token', token, {
+          httpOnly: true,
+          secure: process.env.NODE_ENV === 'production',
+          maxAge: 3600,
+          sameSite: 'strict',
+          path: '/',
+        })
+
+        request.headers.set('Set-Cookie', cookie)
+        return { user }
       } catch (error) {
         console.error('Error registering user:', error) // eslint-disable-line
         throw new Error('Failed to register user')
       }
     },
 
-    login: async (_: unknown, { email, password }: { email: string; password: string }) => {
+    login: async (
+      _: unknown,
+      args: { email: string; password: string },
+      { request }: JwtContext,
+    ) => {
       try {
+        const { email, password } = args
         const user = await userModel.findOne({ email })
 
         if (!user || !(await user.comparePassword(password))) {
@@ -67,14 +86,35 @@ const userResolvers = {
         }
 
         const token = generateToken(user)
-        return { token, user }
+        const cookie = serialize('token', token, {
+          httpOnly: true,
+          secure: process.env.NODE_ENV === 'production',
+          maxAge: 3600,
+          sameSite: 'strict',
+          path: '/',
+        })
+
+        request.headers.set('Set-Cookie', cookie)
+        return user
       } catch (error) {
         console.error('Error logging in:', error) // eslint-disable-line
         throw new Error('Failed to log in')
       }
     },
 
-    logout: () => true,
+    logout: (_: unknown, __: unknown, { request }: JwtContext) => {
+      const clearCookie = serialize('token', '', {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'strict',
+        path: '/',
+        maxAge: 0,
+      })
+
+      request.headers.set('Set-Cookie', clearCookie)
+
+      return true
+    },
   },
 }
 

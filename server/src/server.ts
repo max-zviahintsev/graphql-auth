@@ -16,6 +16,10 @@ const signingKey = process.env.JWT_SECRET as string
 
 const yoga = createYoga({
   schema,
+  cors: {
+    origin: 'http://localhost:5173',
+    credentials: true,
+  },
   plugins: [
     useJWT({
       signingKeyProviders: [createInlineSigningKeyProvider(signingKey)],
