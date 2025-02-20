@@ -6,7 +6,7 @@ export default function Dashboard() {
 
   if (loading) return 'Fetching...'
 
-  const { id, email } = authorizedUser.me
+  const { id, email } = authorizedUser
 
   return (
     <Wrapper>

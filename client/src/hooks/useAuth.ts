@@ -6,7 +6,7 @@ const useAuth = () => {
     fetchPolicy: 'network-only',
   })
 
-  return { authorizedUser: data, loading }
+  return { authorizedUser: data?.me || null, loading }
 }
 
 export default useAuth
