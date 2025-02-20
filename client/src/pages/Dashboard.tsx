@@ -1,13 +1,12 @@
-import { useQuery } from '@apollo/client'
-import { FETCH_USER } from '../api/queries/userQueries'
+import useAuth from '../hooks/useAuth'
 import { Wrapper, Heading } from './StyledComponents'
 
 export default function Dashboard() {
-  const { loading, error, data } = useQuery(FETCH_USER)
+  const { authorizedUser, loading } = useAuth()
 
   if (loading) return 'Fetching...'
-  if (error) return `Fetching error! ${error.message}`
-  const { id, email } = data.user
+
+  const { id, email } = authorizedUser.me
 
   return (
     <Wrapper>

@@ -17,7 +17,7 @@ const generateToken = (user: User) =>
 
 const userResolvers = {
   Query: {
-    user: async (_: unknown, __: unknown, ctx: JwtContext) => {
+    me: async (_: unknown, __: unknown, ctx: JwtContext) => {
       try {
         if (!ctx.jwt) {
           throw new GraphQLError('Unauthorized')

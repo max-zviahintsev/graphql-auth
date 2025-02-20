@@ -3,6 +3,7 @@ import { createRoot } from 'react-dom/client'
 import { createHttpLink, ApolloClient, InMemoryCache, ApolloProvider } from '@apollo/client'
 import { BrowserRouter, Routes, Route } from 'react-router'
 import './index.css'
+import ProtectedRoute from './components/ProtectedRoute.tsx'
 import App from './App.tsx'
 import Landing from './pages/Landing.tsx'
 import Register from './pages/Register.tsx'
@@ -28,7 +29,10 @@ createRoot(document.getElementById('root')!).render(
             <Route path='/' element={<Landing />} />
             <Route path='/login' element={<Login />} />
             <Route path='register' element={<Register />} />
-            <Route path='dashboard' element={<Dashboard />} />
+
+            <Route element={<ProtectedRoute />}>
+              <Route path='dashboard' element={<Dashboard />} />
+            </Route>
           </Route>
         </Routes>
       </BrowserRouter>
